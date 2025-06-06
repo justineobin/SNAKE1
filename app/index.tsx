@@ -1,4 +1,6 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
@@ -11,8 +13,6 @@ import {
   Text,
   View,
 } from 'react-native';
-
-import { MaterialIcons } from '@expo/vector-icons';
 
 import Leaderboard from './Leaderboard';
 import Rules from './Rules';
@@ -125,105 +125,109 @@ export default function Index() {
     else if (dir === 'right' && direction[0] === 0) setDirection([1, 0]);
   };
 
-  if (screen === 'menu') {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ImageBackground
-          source={require('../assets/bg.jpg')}
-          style={styles.background}
-          resizeMode="cover"
-        >
-          <Text style={styles.title}>Snake Game</Text>
-          <Pressable style={styles.menuButton} onPress={() => setScreen('game')}>
-            <Text style={styles.buttonText}>Start Game</Text>
-          </Pressable>
-          <Pressable style={styles.menuButton} onPress={() => setScreen('settings')}>
-            <Text style={styles.buttonText}>Settings</Text>
-          </Pressable>
-          <Pressable style={styles.menuButton} onPress={() => setScreen('leaderboard')}>
-            <Text style={styles.buttonText}>Leaderboard</Text>
-          </Pressable>
-          <Pressable style={styles.menuButton} onPress={() => setScreen('rules')}>
-            <Text style={styles.buttonText}>Rules</Text>
-          </Pressable>
-        </ImageBackground>
-        <StatusBar style="auto" />
-      </SafeAreaView>
-    );
-  }
-
-  if (screen === 'leaderboard') return <Leaderboard goBack={() => setScreen('menu')} />;
-  if (screen === 'settings') return <Settings goBack={() => setScreen('menu')} />;
-  if (screen === 'rules') return <Rules goBack={() => setScreen('menu')} />;
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={{ flex: 1, width: '100%' }}
-        contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-      >
-        <ImageBackground
-          source={require('../assets/bg.jpg')}
-          style={styles.background}
-          resizeMode="cover"
-          imageStyle={{ borderRadius: 12 }}
-        >
-          <Text style={styles.title}>Snake Game</Text>
-          <View style={styles.scoreBox}>
-            <Text style={styles.score}>Score: {score}</Text>
-          </View>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
 
-          <View style={styles.board}>
-            {snake.map(([x, y], idx) => (
-              <View key={idx} style={[styles.snake, { left: x * CELL_SIZE, top: y * CELL_SIZE }]} />
-            ))}
-            <View style={[styles.food, { left: food[0] * CELL_SIZE, top: food[1] * CELL_SIZE }]} />
-          </View>
-
-          <View style={styles.controls}>
-            <View style={styles.row}>
-              <Pressable onPress={() => handleDirection('up')} style={styles.controlBox}>
-                <MaterialIcons name="keyboard-arrow-up" size={36} color="#fff" />
-              </Pressable>
-            </View>
-            <View style={styles.row}>
-              <Pressable onPress={() => handleDirection('left')} style={styles.controlBox}>
-                <MaterialIcons name="keyboard-arrow-left" size={36} color="#fff" />
-              </Pressable>
-              <View style={{ width: 80 }} />
-              <Pressable onPress={() => handleDirection('right')} style={styles.controlBox}>
-                <MaterialIcons name="keyboard-arrow-right" size={36} color="#fff" />
-              </Pressable>
-            </View>
-            <View style={styles.row}>
-              <Pressable onPress={() => handleDirection('down')} style={styles.controlBox}>
-                <MaterialIcons name="keyboard-arrow-down" size={36} color="#fff" />
-              </Pressable>
-            </View>
-          </View>
-
-          {gameOver && (
-            <View style={styles.gameOverBox}>
-              <Text style={styles.gameOverText}>Game Over</Text>
+      {screen === 'menu' ? (
+        <SafeAreaView style={styles.container}>
+          <ImageBackground
+            source={require('../assets/bg.jpg')}
+            style={styles.background}
+            resizeMode="cover"
+          >
+            <Text style={styles.title}>Snake Game</Text>
+            <Pressable style={styles.menuButton} onPress={() => setScreen('game')}>
+              <Text style={styles.buttonText}>Start Game</Text>
+            </Pressable>
+            <Pressable style={styles.menuButton} onPress={() => setScreen('settings')}>
+              <Text style={styles.buttonText}>Settings</Text>
+            </Pressable>
+            <Pressable style={styles.menuButton} onPress={() => setScreen('leaderboard')}>
+              <Text style={styles.buttonText}>Leaderboard</Text>
+            </Pressable>
+            <Pressable style={styles.menuButton} onPress={() => setScreen('rules')}>
+              <Text style={styles.buttonText}>Rules</Text>
+            </Pressable>
+          </ImageBackground>
+          <StatusBar style="auto" />
+        </SafeAreaView>
+      ) : screen === 'leaderboard' ? (
+        <Leaderboard goBack={() => setScreen('menu')} />
+      ) : screen === 'settings' ? (
+        <Settings goBack={() => setScreen('menu')} />
+      ) : screen === 'rules' ? (
+        <Rules goBack={() => setScreen('menu')} />
+      ) : (
+        <SafeAreaView style={styles.container}>
+          <ScrollView
+            style={{ flex: 1, width: '100%' }}
+            contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            <ImageBackground
+              source={require('../assets/bg.jpg')}
+              style={styles.background}
+              resizeMode="cover"
+              imageStyle={{ borderRadius: 12 }}
+            >
+              <Text style={styles.title}>Snake Game</Text>
               <View style={styles.scoreBox}>
-                <Text style={styles.score}>Final Score: {score}</Text>
+                <Text style={styles.score}>Score: {score}</Text>
               </View>
-              <View style={styles.row}>
-                <Pressable style={styles.menuButton} onPress={resetGame}>
-                  <Text style={styles.buttonText}>Restart</Text>
-                </Pressable>
-                <Pressable style={[styles.menuButton, { marginLeft: 20 }]} onPress={() => setScreen('menu')}>
-                  <Text style={styles.buttonText}>Back to Menu</Text>
-                </Pressable>
+
+              <View style={styles.board}>
+                {snake.map(([x, y], idx) => (
+                  <View key={idx} style={[styles.snake, { left: x * CELL_SIZE, top: y * CELL_SIZE }]} />
+                ))}
+                <View style={[styles.food, { left: food[0] * CELL_SIZE, top: food[1] * CELL_SIZE }]} />
               </View>
-            </View>
-          )}
-        </ImageBackground>
-      </ScrollView>
-      <StatusBar style="auto" />
-    </SafeAreaView>
+
+              <View style={styles.controls}>
+                <View style={styles.row}>
+                  <Pressable onPress={() => handleDirection('up')} style={styles.controlBox}>
+                    <MaterialIcons name="keyboard-arrow-up" size={36} color="#fff" />
+                  </Pressable>
+                </View>
+                <View style={styles.row}>
+                  <Pressable onPress={() => handleDirection('left')} style={styles.controlBox}>
+                    <MaterialIcons name="keyboard-arrow-left" size={36} color="#fff" />
+                  </Pressable>
+                  <View style={{ width: 80 }} />
+                  <Pressable onPress={() => handleDirection('right')} style={styles.controlBox}>
+                    <MaterialIcons name="keyboard-arrow-right" size={36} color="#fff" />
+                  </Pressable>
+                </View>
+                <View style={styles.row}>
+                  <Pressable onPress={() => handleDirection('down')} style={styles.controlBox}>
+                    <MaterialIcons name="keyboard-arrow-down" size={36} color="#fff" />
+                  </Pressable>
+                </View>
+              </View>
+
+              {gameOver && (
+                <View style={styles.gameOverBox}>
+                  <Text style={styles.gameOverText}>Game Over</Text>
+                  <View style={styles.scoreBox}>
+                    <Text style={styles.score}>Final Score: {score}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Pressable style={styles.menuButton} onPress={resetGame}>
+                      <Text style={styles.buttonText}>Restart</Text>
+                    </Pressable>
+                    <Pressable style={[styles.menuButton, { marginLeft: 20 }]} onPress={() => setScreen('menu')}>
+                      <Text style={styles.buttonText}>Back to Menu</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              )}
+            </ImageBackground>
+          </ScrollView>
+          <StatusBar style="auto" />
+        </SafeAreaView>
+      )}
+    </>
   );
 }
 
